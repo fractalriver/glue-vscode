@@ -12,7 +12,7 @@ RUN groupadd --gid $USER_GID $USERNAME \
 ## Jessie is not the latest stable Debian release - jessie-backports is not available
 RUN rm -rf /etc/apt/sources.list.d/jessie-backports.list
 
-RUN apt-get update \
+RUN apt-get update --allow-releaseinfo-change \
     && apt-get install -y sudo \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
@@ -28,6 +28,7 @@ RUN apt-get update \
 RUN python3.7 -m venv /root/venv
 
 COPY ./3.7 /tmp/3.7
+RUN /root/venv/bin/pip install -r /tmp/3.7/default.txt
 RUN /root/venv/bin/pip install -r /tmp/3.7/dev.txt
 
 ## Copy pytest execution script to /aws-glue-libs/bin
